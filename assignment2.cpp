@@ -134,17 +134,17 @@ vector<GLfloat> rotation_matrix_z (float theta) {
 }
 
 // Perform matrix multiplication for A B
-vector<GLfloat> mat_mult(int rowA, int colA, vector<GLfloat> A, int rowB, int colB,vector<GLfloat> B) {
-        vector<GLfloat> result;
-        for (int i = 0; i < rowB; i++){
-            for (int j = 0; j < rowA; j++){
-                GLfloat dot_product = 0.0;
-                for (int k = 0; k < colA; k++){
-                    dot_product += A[j*4+k] * B[i*4+k];
-                }
-                result.push_back(dot_product);
+vector<GLfloat> mat_mult( vector<GLfloat> A, vector<GLfloat> B) {
+    vector<GLfloat> result;
+    for (int i = 0; i < B.size(); i += 4) {
+        for (int j = 0; j < A.size(); j += 4) {
+            GLfloat dot_product = 0.0;
+            for (int k = 0; k < 4; k++){
+                dot_product += A[j*4+k] * B[i*4+k];
             }
+            result.push_back(dot_product);
         }
+    }
     return result;
 }
 
@@ -265,7 +265,7 @@ void display_func() {
 
 //     TODO: Apply rotation(s) to the set of points
     vector<GLfloat> homo_points = to_homogenous_coord(points);
-    vector<GLfloat> rotated_matrix = mat_mult(4, 4, rotation_matrix_x(theta), 24, 4, homo_points);
+    vector<GLfloat> rotated_matrix = mat_mult(rotation_matrix_x(theta), homo_points);
     vector<GLfloat> new_points = to_cartesian_coord(rotated_matrix);
     points = rotated_matrix;
 
